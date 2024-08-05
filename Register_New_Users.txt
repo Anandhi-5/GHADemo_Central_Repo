@@ -1,8 +1,0 @@
-Perftest_User_003
-Perftest_User_004
-Perftest_User_005
-Perftest_User_006
-Perftest_User_007
-Perftest_User_008
-Perftest_User_009
-Perftest_User_010
