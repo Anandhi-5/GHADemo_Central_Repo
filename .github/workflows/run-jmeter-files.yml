@@ -1,36 +1,106 @@
-# This is a basic workflow to help you get started with Actions
+name: run-jmeter-scripts
 
-name: CI
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+ workflow_call:
+   inputs:
+      testFilePath:    
+        required: true
+        type: string
+        default: 'tests/'
+      outputsReportFolder:    
+        required: false
+        type: string
+        default: 'reports'
+      jmeterVersion:
+        required: true
+        type: string
+        default: '5.3'
+      jmeterArgs:
+        required: false
+        type: string
+      loadtestgitrepobranch:
+        required: true
+        type: string
+      loadtestgitrepo:
+        required: true
+        type: string 
+      javaVersion:
+        required: false
+        type: string
+        default: 11
+      analyzeResults:
+        required: false
+        type: string
+        default: 'FALSE'
+      use-jpgc-casutg:
+        required: false
+        type: string
+        default: "false"
+   secrets:  
+      PERSONAL_ACCESS_TOKEN:
+        required: true
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+                    
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+  run-jmeter-script:
+    runs-on: [ AUT ]
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - uses: actions/checkout@v2
+        with:
+         ref: '${{ inputs.loadtestgitrepobranch }}'
+         repository: '${{ inputs.loadtestgitrepo }}'
+         token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - name: Set up JDK ${{ inputs.javaVersion }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ inputs.javaVersion }}
+          overwrite-settings: false
+          distribution: 'adopt'
+      - name: Run JMeter Tests with plugin
+        if: ${{ inputs.use-jpgc-casutg }} == "true"
+        uses: albertsons/esgh-jmeter-action@v0.5_1
+        with:
+          testFilePath: ${{ inputs.testFilePath }}
+          outputReportsFolder: ${{ inputs.outputsReportFolder }}
+          args: ${{ inputs.jmeterArgs }}
+      - name: Run JMeter Tests
+        if: ${{ inputs.use-jpgc-casutg }} == "false"
+        uses: albertsons/esgh-jmeter-action@v0.5.0
+        with:
+          testFilePath: ${{ inputs.testFilePath }}.jmx
+          outputReportsFolder: ${{ inputs.outputsReportFolder }}
+          args: ${{ inputs.jmeterArgs }}
+      - name: Create virtual environment
+        run: python -m venv venv
+      - name: Install Python script dependencies
+        run: source venv/bin/activate; pip3 install -r requirements.txt
+      - name: "[[ALBERTSONS]]: Generate Formatted HTML Report"
+        env:
+          ANALYZE_RESULTS: 'FALSE'
+        run: source venv/bin/activate; python3 -u report_generator.py      
+      - name: Arhive the Report Artifacts
+        if: always()
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          ls -al
+          tar -czvf ${{ github.event.repository.name }}.tar.gz  -C ${{ github.workspace }} reports/
+      - name: Upload Results
+        uses: actions/upload-artifact@v2
+        with:
+          name: jmeter-results
+          path: |
+            ${{ inputs.outputsReportFolder }}/*
+            **/*.tar.gz
+            report.html
+      - name: "[[ALBERTSONS]]: Analyze Results"
+        if: ( inputs.analyzeResults == 'TRUE' )
+        env:
+          ANALYZE_RESULTS: 'TRUE'
+        run: |
+           source venv/bin/activate
+           python3 -u report_generator.py 
+      - name: Generate Summary
+        if: always()
+        run: |
+          echo '## Build Summary :rocket:' >> $GITHUB_STEP_SUMMARY
+          echo '+ Application Repository: ${{ github.repository	 }} :book:' >> $GITHUB_STEP_SUMMARY
+          echo '+ Current Branch: ${{ github.ref_name }} :palm_tree:' >> $GITHUB_STEP_SUMMARY 
