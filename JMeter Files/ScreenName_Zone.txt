@@ -1,0 +1,5 @@
+home,zone1
+home,zone2
+home,zone3
+home,zone4
+home,zone5

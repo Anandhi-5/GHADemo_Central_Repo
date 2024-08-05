@@ -1,0 +1,4 @@
+ServiceType
+delivery
+instore
+pickup

@@ -1,0 +1,5 @@
+zone0
+zone1
+zone3
+zone4
+zone5
