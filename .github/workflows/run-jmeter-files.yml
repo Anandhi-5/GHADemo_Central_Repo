@@ -58,7 +58,7 @@ jobs:
           distribution: 'adopt'
       - name: Run JMeter Tests with plugin
         if: ${{ inputs.use-jpgc-casutg }} == "true"
-        uses: rbhadti94/apache-jmeter-action@v0.5_1
+        uses: rbhadti94/apache-jmeter-action@v0.5.0
         with:
           testFilePath: ${{ inputs.testFilePath }}
           outputReportsFolder: ${{ inputs.outputsReportFolder }}
