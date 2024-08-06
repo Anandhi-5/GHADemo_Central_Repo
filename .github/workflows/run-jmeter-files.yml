@@ -67,7 +67,7 @@ jobs:
         if: ${{ inputs.use-jpgc-casutg }} == "false"
         uses: rbhadti94/apache-jmeter-action@v0.5.0
         with:
-          testFilePath: ${{ inputs.testFilePath }}.jmx
+          testFilePath: ${{ inputs.testFilePath }}
           outputReportsFolder: ${{ inputs.outputsReportFolder }}
           args: ${{ inputs.jmeterArgs }}
       # - name: Create virtual environment
