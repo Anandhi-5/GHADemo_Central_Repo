@@ -56,8 +56,8 @@ jobs:
       #    ls -R /github/workspace
       # - name: Debug root dir
       #   run: ls -R /
-      - name: Debug dir n central-repo
-        run: ls -R GHADemo_Central_Repo
+      # - name: Debug dir n central-repo
+      #   run: ls -R GHADemo_Central_Repo
       - name: Set up JDK ${{ inputs.javaVersion }}
         uses: actions/setup-java@v3
         with:
