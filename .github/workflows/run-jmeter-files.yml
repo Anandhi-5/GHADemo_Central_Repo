@@ -54,8 +54,8 @@ jobs:
       # - name: List files in the workspace
       #   run: |
       #    ls -R /github/workspace
-      - name: Debug root dir
-        run: ls -R /
+      # - name: Debug root dir
+      #   run: ls -R /
       - name: Debug dir n central-repo
         run: ls -R GHADemo_Central_Repo
       - name: Set up JDK ${{ inputs.javaVersion }}
