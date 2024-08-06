@@ -43,7 +43,7 @@ on:
                     
 jobs:
   run-jmeter-script:
-    runs-on: [ AUT ]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
