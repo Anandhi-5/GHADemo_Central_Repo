@@ -18,12 +18,12 @@ on:
       jmeterArgs:
         required: false
         type: string
-      # loadtestgitrepobranch:
-      #   required: true
-      #   type: string
-      # loadtestgitrepo:
-      #   required: true
-      #   type: string 
+      loadtestgitrepobranch:
+        required: true
+        type: string
+      loadtestgitrepo:
+        required: true
+        type: string 
       javaVersion:
         required: false
         type: string
@@ -47,9 +47,9 @@ jobs:
     steps:
       - name: Checkout the central repo
         uses: actions/checkout@v2
-        # with:
-        #  ref: '${{ inputs.loadtestgitrepobranch }}'
-        #  repository: '${{ inputs.loadtestgitrepo }}'
+        with:
+         ref: '${{ inputs.loadtestgitrepobranch }}'
+         repository: '${{ inputs.loadtestgitrepo }}'
         #  token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       # - name: List files in the workspace
       #   run: |
