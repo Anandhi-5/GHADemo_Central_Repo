@@ -70,37 +70,37 @@ jobs:
           testFilePath: ${{ inputs.testFilePath }}.jmx
           outputReportsFolder: ${{ inputs.outputsReportFolder }}
           args: ${{ inputs.jmeterArgs }}
-      - name: Create virtual environment
-        run: python -m venv venv
-      - name: Install Python script dependencies
-        run: source venv/bin/activate; pip3 install -r requirements.txt
-      - name: "[[ALBERTSONS]]: Generate Formatted HTML Report"
-        env:
-          ANALYZE_RESULTS: 'FALSE'
-        run: source venv/bin/activate; python3 -u report_generator.py      
-      - name: Arhive the Report Artifacts
-        if: always()
-        run: |
-          ls -al
-          tar -czvf ${{ github.event.repository.name }}.tar.gz  -C ${{ github.workspace }} reports/
-      - name: Upload Results
-        uses: actions/upload-artifact@v2
-        with:
-          name: jmeter-results
-          path: |
-            ${{ inputs.outputsReportFolder }}/*
-            **/*.tar.gz
-            report.html
-      - name: "[[ALBERTSONS]]: Analyze Results"
-        if: ( inputs.analyzeResults == 'TRUE' )
-        env:
-          ANALYZE_RESULTS: 'TRUE'
-        run: |
-           source venv/bin/activate
-           python3 -u report_generator.py 
-      - name: Generate Summary
-        if: always()
-        run: |
-          echo '## Build Summary :rocket:' >> $GITHUB_STEP_SUMMARY
-          echo '+ Application Repository: ${{ github.repository	 }} :book:' >> $GITHUB_STEP_SUMMARY
-          echo '+ Current Branch: ${{ github.ref_name }} :palm_tree:' >> $GITHUB_STEP_SUMMARY 
+      # - name: Create virtual environment
+      #   run: python -m venv venv
+      # - name: Install Python script dependencies
+      #   run: source venv/bin/activate; pip3 install -r requirements.txt
+      # - name: "[[ALBERTSONS]]: Generate Formatted HTML Report"
+      #   env:
+      #     ANALYZE_RESULTS: 'FALSE'
+      #   run: source venv/bin/activate; python3 -u report_generator.py      
+      # - name: Arhive the Report Artifacts
+      #   if: always()
+      #   run: |
+      #     ls -al
+      #     tar -czvf ${{ github.event.repository.name }}.tar.gz  -C ${{ github.workspace }} reports/
+      # - name: Upload Results
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: jmeter-results
+      #     path: |
+      #       ${{ inputs.outputsReportFolder }}/*
+      #       **/*.tar.gz
+      #       report.html
+      # - name: "[[ALBERTSONS]]: Analyze Results"
+      #   if: ( inputs.analyzeResults == 'TRUE' )
+      #   env:
+      #     ANALYZE_RESULTS: 'TRUE'
+      #   run: |
+      #      source venv/bin/activate
+      #      python3 -u report_generator.py 
+      # - name: Generate Summary
+      #   if: always()
+      #   run: |
+      #     echo '## Build Summary :rocket:' >> $GITHUB_STEP_SUMMARY
+      #     echo '+ Application Repository: ${{ github.repository	 }} :book:' >> $GITHUB_STEP_SUMMARY
+      #     echo '+ Current Branch: ${{ github.ref_name }} :palm_tree:' >> $GITHUB_STEP_SUMMARY 
