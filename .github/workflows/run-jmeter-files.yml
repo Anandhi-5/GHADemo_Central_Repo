@@ -73,7 +73,7 @@ jobs:
           args: ${{ inputs.jmeterArgs }}
       - name: Run JMeter Tests
         if: ${{ inputs.use-jpgc-casutg }} == "false"
-        uses: rbhadti94/apache-jmeter-action@v0.5.0
+        uses: rbhadti94/apache-jmeter-action@v0.6.0
         with:
           testFilePath: ${{ inputs.testFilePath }}
           outputReportsFolder: ${{ inputs.outputsReportFolder }}
